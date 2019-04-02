@@ -19,7 +19,7 @@ class TodoManager extends React.Component {
         <button onClick={() => this.props.createTask(this.state.name)} type="button" className="btn btn-primary">
           Create
         </button>
-        {this.props.tasks.map((task, index) => {
+        {  this.props.tasks &&  this.props.tasks.map((task, index) => {
           return (
             <ul>
               <li>

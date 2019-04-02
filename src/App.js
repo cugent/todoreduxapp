@@ -3,40 +3,26 @@ import { Switch, Route } from "react-router";
 import { Redirect, BrowserRouter } from "react-router-dom";
 import ToDoManager from "./container/TodoManager";
 import EditViewTodo from "./container/EditViewTodo";
+import { deleteTask, createTask,updateTask } from './redux';
+import { connect } from 'react-redux';
+
 
 class App extends Component {
   constructor(props) {
     super(props);
-
+   console.log("props",props)
     this.state = {
-      tasks: [
-        {
-          id: 1,
-          name: "Learn React"
-        },
-        {
-          id: 2,
-          name: "Learn Redux"
-        },
-        {
-          id: 3,
-          name: "Learn Express"
-        }
-      ],
-      nextID: 4
+     
+     nextID: 1
     };
   }
 
   deleteTask = id => {
-    let newTaskList = this.state.tasks;
 
-    let index = newTaskList.findIndex(obj => {
+    let index = this.props.tasks.findIndex(obj => {
       return obj.id === id;
     });
-
-    newTaskList.splice(index, 1);
-
-    this.setState({ tasks: newTaskList });
+    this.props.deleteTask(index);
   };
 
   updateTask = (name, id) => {
@@ -51,17 +37,18 @@ class App extends Component {
     this.setState({ tasks: newTaskList });
   };
   createTask = name => {
-    let newTaskList = this.state.tasks;
-    let id = this.state.nextID;
+  console.log("create",name);
     let obj = {
       name,
-      id
+      id:this.state.nextID
     };
-    newTaskList.push(obj);
-    this.setState({ tasks: newTaskList, nextID: id++ });
+    this.setState({ nextID: this.state.nextID++});
+    this.props.createTask(obj);
+     
   };
 
   render() {
+    console.log("reneder",this.props.tasks)
     return (
       <div>
         <BrowserRouter>
@@ -70,13 +57,13 @@ class App extends Component {
             <Route
               path="/home"
               render={props => {
-                return <ToDoManager {...props} tasks={this.state.tasks} createTask={this.createTask} />;
+                return <ToDoManager {...props} tasks={this.props.tasks} createTask={this.createTask} />;
               }}
             />
             <Route
               path="/editview/:id"
               render={props => {
-                return <EditViewTodo deleteTask={this.deleteTask} updateTask={this.updateTask} {...props} tasks={this.state.tasks} />;
+                return <EditViewTodo deleteTask={this.deleteTask} updateTask={this.updateTask} {...props} tasks={this.props.tasks} />;
               }}
             />
           </Switch>
@@ -86,4 +73,23 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  console.log( "maptstate",state)
+  return {
+
+    tasks: state.tasks,
+    nextID:state.nextID
+
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteTask: (id) => dispatch(deleteTask(id)),
+  createTask: (payload) => dispatch(createTask(payload)),
+  updateTask: (id) => dispatch(updateTask(id)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
