@@ -29,22 +29,25 @@ export const taskReducer=(state =initialState, action)=>{
                                 )
 
         case 'DELETE_TASK':
+            console.log("DELETE TASK state", state);
             return Object.assign({},
                                  state,
                                   {tasks:[...state.tasks.filter(item => item.id !== action.id)],nextID:state.nextID})
 
         case 'UPDATE_TASK':
-             const newStateTasks = [...state.tasks] // clone the array
-             for(let i=0;i<newStateTasks.length;i++){
+            console.log("UPDATE TASK REDUCER")
+            const newStateTasks = [...state.tasks] // clone the array
+            for(let i=0;i<newStateTasks.length;i++){
                 if(action.payload.id===newStateTasks[i].id){
                     console.log( "inside the forloop",newStateTasks[i])
                     newStateTasks[i].name=action.payload.name;
                     
                 }
-             }
+            }
+            console.log("UPDATE TASK REDUCER -- return new object", state)
             return Object.assign({},
                                  state,
-                                 {task:newStateTasks,nextID:state.nextID})
+                                 {tasks:newStateTasks,nextID:state.nextID})
 
         default:
             return state;
