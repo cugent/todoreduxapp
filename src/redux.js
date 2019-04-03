@@ -2,6 +2,7 @@ import {
     combineReducers,
     createStore,
 } from 'redux';
+import update from 'react-addons-update';
 
 export const createTask = (payload) => ({
     type: 'CREATE_TASK',   
@@ -35,19 +36,18 @@ export const taskReducer=(state =initialState, action)=>{
                                   {tasks:[...state.tasks.filter(item => item.id !== action.id)],nextID:state.nextID})
 
         case 'UPDATE_TASK':
-            console.log("UPDATE TASK REDUCER")
-            const newStateTasks = [...state.tasks] // clone the array
-            for(let i=0;i<newStateTasks.length;i++){
-                if(action.payload.id===newStateTasks[i].id){
-                    console.log( "inside the forloop",newStateTasks[i])
-                    newStateTasks[i].name=action.payload.name;
-                    
+           const task= state.tasks.map( task => {
+                if (task.id === action.id) {
+                    return update(task, { name: {$set: "New Test"}})
                 }
-            }
+                return task;
+             })
+            
+
             console.log("UPDATE TASK REDUCER -- return new object", state)
             return Object.assign({},
                                  state,
-                                 {tasks:newStateTasks,nextID:state.nextID})
+                                 {tasks:task,nextID:state.nextID})
 
         default:
             return state;
