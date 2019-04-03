@@ -17,38 +17,32 @@ class App extends Component {
     };
   }
 
-  deleteTask = id => {
+ // deleteTask = id => {
+  //  console.log("delete",id);
+   // this.props.deleteTask(id);
+  //};
 
-    let index = this.props.tasks.findIndex(obj => {
-      return obj.id === id;
-    });
-    this.props.deleteTask(index);
-  };
-
-  updateTask = (name, id) => {
-    let newTaskList = this.state.tasks;
-
-    let index = newTaskList.findIndex(obj => {
-      return obj.id === id;
-    });
-
-    newTaskList[index].name = name;
-
-    this.setState({ tasks: newTaskList });
-  };
-  createTask = name => {
-  console.log("create",name);
-    let obj = {
-      name,
-      id:this.state.nextID
-    };
-    this.setState({ nextID: this.state.nextID++});
-    this.props.createTask(obj);
+ // updateTask = (obj) => {
+   // let obj = {
+   //   name,
+   //   id:id
+  //  };
+    //console.log( "update",obj)
+    //this.props.updateTask(obj);
+  //};
+ // createTask = (obj) => {
+  //  let obj = {
+  //    name,
+  //    id:this.state.nextID
+ //   };
+  //  this.setState({ nextID: this.state.nextID+1});
+ //   console.log("create",obj);
+  //  this.props.createTask(obj);
      
-  };
+ // };
 
   render() {
-    console.log("reneder",this.props.tasks)
+   
     return (
       <div>
         <BrowserRouter>
@@ -57,13 +51,13 @@ class App extends Component {
             <Route
               path="/home"
               render={props => {
-                return <ToDoManager {...props} tasks={this.props.tasks} createTask={this.createTask} />;
+                return <ToDoManager  />;
               }}
             />
             <Route
               path="/editview/:id"
               render={props => {
-                return <EditViewTodo deleteTask={this.deleteTask} updateTask={this.updateTask} {...props} tasks={this.props.tasks} />;
+                return <EditViewTodo  {...props}  />;
               }}
             />
           </Switch>
@@ -73,15 +67,9 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log( "maptstate",state)
-  return {
-
-    tasks: state.tasks,
-    nextID:state.nextID
-
-  }
-}
+const mapStateToProps = (state) => ({
+    tasks: state.tasks
+})
 
 const mapDispatchToProps = (dispatch) => ({
   deleteTask: (id) => dispatch(deleteTask(id)),

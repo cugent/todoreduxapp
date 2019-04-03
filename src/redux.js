@@ -7,47 +7,49 @@ export const createTask = (payload) => ({
     type: 'CREATE_TASK',   
     payload                     // <-- action.type
 });
-export const deleteTask = (id) => ({
+export const deleteTask = (id) => ( {
+    
     type: 'DELETE_TASK',                        // <-- actigit `on.type
     id                                         // <-- action.idx
 });
-export const updateTask = (id) => ({
-    type: 'UPDATE_TASK',                        // <-- actigit `on.type
-    id                                         // <-- action.idx
+export const updateTask = (payload) => ({
+    type: 'UPDATE_TASK',   
+    payload                                        // <-- action.idx
 });
 
 
 export const taskReducer=(state =initialState, action)=>{
-    console.log("reducer state",state);
+    console.log("reducer state",state,action.type);
     switch (action.type) {
         
         case 'CREATE_TASK':
-        console.log("action",action.payload);
-        console.log("actiontype",action.type);
-
             return Object.assign({},
                                  state,
-                                 { tasks:[...state.tasks,action.payload],
-                                   nextID:state.nextID++}
+                                 { tasks:[...state.tasks,action.payload], nextID:state.nextID+1}
                                 )
 
         case 'DELETE_TASK':
             return Object.assign({},
                                  state,
-                                  {tasks:[
-                                          state.tasks.slice(action.index,1)]})
+                                  {tasks:[...state.tasks.filter(item => item.id !== action.id)],nextID:state.nextID})
 
         case 'UPDATE_TASK':
-            
+             const newStateTasks = [...state.tasks] // clone the array
+             for(let i=0;i<newStateTasks.length;i++){
+                if(action.payload.id===newStateTasks[i].id){
+                    console.log( "inside the forloop",newStateTasks[i])
+                    newStateTasks[i].name=action.payload.name;
+                    
+                }
+             }
             return Object.assign({},
                                  state,
-                                 {task:[...state.tasks[action.id],action.payload]})
+                                 {task:newStateTasks,nextID:state.nextID})
 
         default:
             return state;
     }
-
-
+    
 
 }
 const initialState= { 

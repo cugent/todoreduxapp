@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { createTask } from '../redux';
+import { connect } from 'react-redux';
 
 class TodoManager extends React.Component {
   constructor(props) {
@@ -16,14 +18,18 @@ class TodoManager extends React.Component {
       <div>
         <h1>Task List</h1>
         <input onChange={this.handleChange} style={{ width: "150px", display: "inline-block" }} type="text" className="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter Task" />
-        <button onClick={() => this.props.createTask(this.state.name)} type="button" className="btn btn-primary">
+        <button onClick={() => {let obj = {
+                                           name:this.state.name,
+                                           id:this.props.nextID
+                                          };   
+                                          this.props.createTask(obj)}} type="button" className="btn btn-primary">
           Create
         </button>
         {  this.props.tasks &&  this.props.tasks.map((task, index) => {
           return (
             <ul>
-              <li>
-                <Link to={`/editview/${task.id}`}>{task.name}</Link>
+              <li >
+                <Link  to={`/editview/${task.id}`}>{task.name}</Link>
               </li>
             </ul>
           );
@@ -32,5 +38,16 @@ class TodoManager extends React.Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  tasks: state.tasks,
+  nextID:state.nextID
+})
 
-export default TodoManager;
+const mapDispatchToProps = (dispatch) => ({
+createTask: (payload) => dispatch(createTask(payload))
+})
+
+export default connect(
+mapStateToProps,
+mapDispatchToProps
+)(TodoManager);
